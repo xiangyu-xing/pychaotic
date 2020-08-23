@@ -1,31 +1,20 @@
 import numpy as np
-from scipy.integrate import odeint
-from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
+from scipy.integrate import odeint
 
-def dmove(variables, t, parameters = None):
-    """
-    point：present location index
-    sets：super parameters
-    """
-    p=10
-    r = 28
-    b = 3
-    x, y, z = variables
-    dx = p * (y - x)
-    dy = x * (r - z)
-    dz = x * y - b * z
-    return np.array([dx , dy, dz])
-# https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.odeint.html
 
-t = np.arange(0, 30, 0.001)
-P1 = odeint(dmove, (0., 1., 0.), t, args=([10., 28., 3.],))  #
-## (0.,1.,0.) is the initial point; args is the set for super parameters
-P2 = odeint(dmove, (0., 1.01, 0.), t)
-## slightly change the initial point from y = 1.0 to be y = 1.01
-
-fig = plt.figure()
-ax = Axes3D(fig)
-ax.plot(P1[:, 0], P1[:, 1], P1[:, 2])
-ax.plot(P2[:, 0], P2[:, 1], P2[:, 2])
+g = 9.8
+l = 1
+def diff2(d_list, t):
+	omega, theta = d_list
+	return np.array([-g/l*theta, omega])
+t = np.linspace(0, 20, 2000)
+result = odeint(diff2, [0, 35/180*np.pi], t)
+# 结果是一个两列的矩阵， odeint中第二个是初始单摆角度35度
+plt.plot(t, result[:, 0])  # 输出omega随时变化曲线
+plt.plot(t, result[:, 1])  # 输出theta随时变化曲线，即方程解
 plt.show()
+
+
+t= [[1,2,3],[4,5,6],[7,8,9]]
+print(np.array(t).reshape((1,9),order = "F"))
